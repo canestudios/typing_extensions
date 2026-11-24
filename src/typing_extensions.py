@@ -173,8 +173,15 @@ def _caller(depth=1, default='__main__'):
     return None
 
 
-# Placeholder for sentinel methods, because sentinels can not have their own sentinels
-_sentinel_placeholder = object()
+# Placeholder for sentinel methods, because sentinels can not have their own sentinels.
+# Its own class lets the parameters that default to it say so in their annotations, which
+# then hold at runtime: tools that compile annotations into types (Cython's
+# annotation_typing) rely on that.
+class _SentinelPlaceholder:
+    __slots__ = ()
+
+
+_sentinel_placeholder = _SentinelPlaceholder()
 
 if hasattr(builtins, "sentinel"):  # 3.15+
     sentinel = builtins.sentinel
@@ -188,12 +195,12 @@ else:
 
         def __init__(
             self,
-            __name: str = _sentinel_placeholder,
-            __repr: typing.Optional[str] = _sentinel_placeholder,
+            __name: typing.Union[str, _SentinelPlaceholder] = _sentinel_placeholder,
+            __repr: typing.Union[str, _SentinelPlaceholder, None] = _sentinel_placeholder,
             /,
             *,
             repr: typing.Optional[str] = None,
-            name: str = _sentinel_placeholder,
+            name: typing.Union[str, _SentinelPlaceholder] = _sentinel_placeholder,
         ) -> None:
             if name is not _sentinel_placeholder:
                 warnings.warn(
