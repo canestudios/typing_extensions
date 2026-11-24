@@ -1059,7 +1059,7 @@ else:
         __slots__ = ()
 
         @abc.abstractmethod
-        def read(self, size: int = ..., /) -> T_co:
+        def read(self, size: typing.Union[int, _types.EllipsisType] = ..., /) -> T_co:
             """Read data from the input stream and return it.
 
             If *size* is specified, at most *size* items (bytes/characters) will be
@@ -3944,7 +3944,7 @@ if hasattr(typing, "is_protocol"):
     is_protocol = typing.is_protocol
     get_protocol_members = typing.get_protocol_members
 else:
-    def is_protocol(tp: type, /) -> bool:
+    def is_protocol(tp: typing.Type[typing.Any], /) -> bool:
         """Return True if the given type is a Protocol.
 
         Example::
@@ -3965,7 +3965,7 @@ else:
             and tp is not typing.Protocol
         )
 
-    def get_protocol_members(tp: type, /) -> typing.FrozenSet[str]:
+    def get_protocol_members(tp: typing.Type[typing.Any], /) -> typing.FrozenSet[str]:
         """Return the set of members defined in a Protocol.
 
         Example::
